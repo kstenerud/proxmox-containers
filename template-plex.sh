@@ -4,7 +4,7 @@ set -eux
 
 TEMPLATE_CT=200
 INSTANCE_CT=201
-INSTANCE_NAME=template-ubuntu
+INSTANCE_NAME=template-plex
 
 pct clone $TEMPLATE_CT $INSTANCE_CT --full 1
 pct resize $INSTANCE_CT rootfs 2G
