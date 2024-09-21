@@ -33,16 +33,30 @@ echo 'Acquire::ForceIPv4 "true";' | pct exec $INSTANCE_CT -- tee /etc/apt/apt.co
 # Make sure DHCP client sends the correct identifier
 echo "send dhcp-client-identifier = hardware;" | pct exec $INSTANCE_CT -- tee -a /etc/dhcp/dhclient.conf
 
+# Apt defaults
+echo 'APT::Get::Assume-Yes "true";
+
+Acquire {
+  Queue-Mode "host";
+  Retries "10";
+};
+' | pct exec $INSTANCE_CT -- tee /etc/apt/apt.conf.d/99custom-config
+
 pct stop $INSTANCE_CT
 pct start $INSTANCE_CT
 
 # Use a fast mirror
-pct exec $INSTANCE_CT -- sed -i 's/deb.debian.org/ftp.uni-mainz.de/g' /etc/apt/sources.list
+pct exec $INSTANCE_CT -- sed -i 's/deb.debian.org/ftp2.de.debian.org/g' /etc/apt/sources.list
+
+# Extra mirror
+echo "deb http://ftp.uni-mainz.de/debian bookworm main contrib non-free non-free-firmware
+deb http://ftp.uni-mainz.de/debian bookworm-updates main contrib non-free non-free-firmware" | pct exec $INSTANCE_CT -- tee /etc/apt/sources.list.d/ftp.uni-mainz.de.list
 
 pct exec $INSTANCE_CT -- sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 pct exec $INSTANCE_CT -- locale-gen
 pct exec $INSTANCE_CT -- update-locale LANG=en_US.UTF-8 LANGUAGE=en_US LC_ALL=en_US.UTF-8
 pct exec $INSTANCE_CT -- sed -i 's/bookworm[^ ]* main contrib$/& non-free non-free-firmware/g' /etc/apt/sources.list
+pct exec $INSTANCE_CT -- apt clean
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt dist-upgrade -y
 
