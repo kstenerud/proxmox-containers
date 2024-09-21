@@ -42,8 +42,8 @@ Acquire {
 };
 ' | pct exec $INSTANCE_CT -- tee /etc/apt/apt.conf.d/99custom-config
 
-pct stop $INSTANCE_CT
-pct start $INSTANCE_CT
+# pct stop $INSTANCE_CT
+# pct start $INSTANCE_CT
 
 # Use a fast mirror
 # pct exec $INSTANCE_CT -- sed -i 's/deb.debian.org/ftp2.de.debian.org/g' /etc/apt/sources.list
