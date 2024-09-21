@@ -19,6 +19,10 @@ pct create $INSTANCE_CT local:vztmpl/ubuntu-24.04-standard_24.04-2_amd64.tar.zst
     --features nesting=1 \
     --unprivileged 1
 
+# Force apt to use ipv4
+# echo 'Acquire::ForceIPv4 "true";' | pct exec $INSTANCE_CT -- tee /etc/apt/apt.conf.d/99force-ipv4
+# echo 'precedence ::ffff:0:0/96  100' | pct exec $INSTANCE_CT -- tee -a /etc/gai.conf
+
 # Use a fast mirror
 pct exec $INSTANCE_CT -- sed -i 's/archive.ubuntu.com/ftp.uni-stuttgart.de/g' /etc/apt/sources.list
 

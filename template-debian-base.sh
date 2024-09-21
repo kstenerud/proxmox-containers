@@ -19,11 +19,15 @@ pct create $INSTANCE_CT local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst \
     --features nesting=1 \
     --unprivileged 1
 
+# Force apt to use ipv4
+echo 'Acquire::ForceIPv4 "true";' | pct exec $INSTANCE_CT -- tee /etc/apt/apt.conf.d/99force-ipv4
+# echo 'precedence ::ffff:0:0/96  100' | pct exec $INSTANCE_CT -- tee -a /etc/gai.conf
+
 # Bugfix: Stop container from holding up network trying to get a dhcpv6 lease
-echo 'net.ipv6.conf.all.disable_ipv6=1
-net.ipv6.conf.default.disable_ipv6=1
-net.ipv6.conf.lo.disable_ipv6=1
-' | pct exec $INSTANCE_CT -- tee -a /etc/sysctl.conf
+# echo 'net.ipv6.conf.all.disable_ipv6=1
+# net.ipv6.conf.default.disable_ipv6=1
+# net.ipv6.conf.lo.disable_ipv6=1
+# ' | pct exec $INSTANCE_CT -- tee -a /etc/sysctl.conf
 
 # Make sure DHCP client sends the correct identifier
 echo "send dhcp-client-identifier = hardware;" | pct exec $INSTANCE_CT -- tee -a /etc/dhcp/dhclient.conf
