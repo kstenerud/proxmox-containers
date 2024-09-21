@@ -6,6 +6,8 @@ INSTANCE_CT=100
 
 # Debian Template
 
+# pveam download local debian-12-standard_12.2-1_amd64.tar.zst
+
 pct create $INSTANCE_CT local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst \
     --hostname template \
     --memory 2048 \
@@ -32,6 +34,7 @@ pct start $INSTANCE_CT
 pct exec $INSTANCE_CT -- sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 pct exec $INSTANCE_CT -- locale-gen
 pct exec $INSTANCE_CT -- update-locale LANG=en_US.UTF-8 LANGUAGE=en_US LC_ALL=en_US.UTF-8
+pct exec $INSTANCE_CT -- sed -i 's/bookworm[^ ]* main contrib$/& non-free/g' /etc/apt/sources.list
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt dist-upgrade -y
 

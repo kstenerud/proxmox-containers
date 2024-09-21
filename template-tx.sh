@@ -6,6 +6,7 @@ MATE_CT=101
 TEMPLATE_CT=102
 
 pct clone $MATE_CT $TEMPLATE_CT --full 1
+pct resize $TEMPLATE_CT rootfs 10G
 pct set $TEMPLATE_CT \
     --hostname template \
     --memory 2048 \
@@ -16,7 +17,9 @@ wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | pct exec $TEMPLA
 echo "deb https://download.sublimetext.com/ apt/stable/" | pct exec $TEMPLATE_CT -- tee /etc/apt/sources.list.d/sublime-text.list
 pct exec $TEMPLATE_CT -- apt update
 pct exec $TEMPLATE_CT -- apt dist-upgrade -y
-pct exec $TEMPLATE_CT -- apt install -y nmap samba transmission-remote-gtk amule-utils-gui gimp mpv sublime-text
+pct exec $TEMPLATE_CT -- apt install -y nmap samba transmission-remote-gtk amule-utils-gui mpv sublime-text
+
+pct exec $TEMPLATE_CT -- flatpak install -y https://flathub.org/repo/appstream/org.gimp.GIMP.flatpakref
 
 # https://remotedesktop.google.com/headless
 pct exec $TEMPLATE_CT -- wget -qO /tmp/crd.deb http://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb

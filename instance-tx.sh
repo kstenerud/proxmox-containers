@@ -15,6 +15,7 @@ HOST_DATA=/home/data
 pct clone $TEMPLATE_CT $INSTANCE_CT --full 1
 pct resize $INSTANCE_CT rootfs 10G
 pct set $INSTANCE_CT \
+    --onboot=1 \
     --hostname ${INSTANCE_NAME} \
     --memory 16384 \
     --net0 name=eth0,hwaddr=12:4B:53:00:00:${ADDRESS},ip=dhcp,ip6=dhcp,bridge=vmbr0
