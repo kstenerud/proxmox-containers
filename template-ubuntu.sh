@@ -3,13 +3,14 @@
 set -eux
 
 INSTANCE_CT=200
+INSTANCE_NAME=template-ubuntu
 
 # Ubuntu 24.04 Template
 
 # pveam download local ubuntu-24.04-standard_24.04-2_amd64.tar.zst
 
 pct create $INSTANCE_CT local:vztmpl/ubuntu-24.04-standard_24.04-2_amd64.tar.zst \
-    --hostname template \
+    --hostname ${INSTANCE_NAME} \
     --memory 2048 \
     --rootfs local-lvm:1 \
     --net0 name=eth0,hwaddr=12:4B:53:00:00:99,ip=dhcp,ip6=dhcp,bridge=vmbr0 \
