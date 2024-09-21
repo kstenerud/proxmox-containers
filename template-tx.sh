@@ -32,6 +32,10 @@ pct exec $INSTANCE_CT -- flatpak install -y https://flathub.org/repo/appstream/o
 pct exec $INSTANCE_CT -- wget -qO /tmp/crd.deb http://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
 pct exec $INSTANCE_CT -- apt install -y /tmp/crd.deb
 pct exec $INSTANCE_CT -- rm /tmp/crd.deb
+
+# Delete dhcpv6 leases or else they'll never renew
+pct exec $INSTANCE_CT -- rm /var/lib/dhcp/dhclient*
+
 pct stop $INSTANCE_CT
 pct template $INSTANCE_CT
 
