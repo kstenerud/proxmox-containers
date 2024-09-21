@@ -34,7 +34,7 @@ pct exec $INSTANCE_CT -- apt install -y /tmp/crd.deb
 pct exec $INSTANCE_CT -- rm /tmp/crd.deb
 
 # Delete dhcpv6 leases or else they'll never renew
-pct exec $INSTANCE_CT -- rm /var/lib/dhcp/dhclient*
+echo "rm /var/lib/dhcp/dhclient*" | pct exec $INSTANCE_CT -- sh
 
 pct stop $INSTANCE_CT
 pct template $INSTANCE_CT
