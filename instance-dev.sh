@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Note: Base UID is 100000
-
 set -eux
+
+# Local config
 
 TEMPLATE_CT=103
 INSTANCE_CT=10001
@@ -10,7 +10,13 @@ INSTANCE_NAME=dev
 ADDRESS=21
 USERNAME=karl
 
+# Host config
+
 HOST_DATA=/home/data
+HOST_BASE_UID=100000
+HOST_BASE_GID=100000
+
+# Script
 
 pct clone $TEMPLATE_CT $INSTANCE_CT --full 1
 pct resize $INSTANCE_CT rootfs 20G
@@ -20,8 +26,8 @@ pct set $INSTANCE_CT \
     --memory 16384 \
     --net0 name=eth0,hwaddr=12:4B:53:00:00:${ADDRESS},ip=dhcp,ip6=dhcp,bridge=vmbr0
 mkdir -p /home/data/${INSTANCE_NAME}/home
-chown 100000:100000 ${HOST_DATA}/${INSTANCE_NAME}
-chown 100000:100000 ${HOST_DATA}/${INSTANCE_NAME}/home
+chown ${HOST_BASE_UID}:${HOST_BASE_GID} ${HOST_DATA}/${INSTANCE_NAME}
+chown ${HOST_BASE_UID}:${HOST_BASE_GID} ${HOST_DATA}/${INSTANCE_NAME}/home
 pct set $INSTANCE_CT -mp0 ${HOST_DATA}/${INSTANCE_NAME}/home,mp=/home
 pct start $INSTANCE_CT
 
@@ -31,5 +37,8 @@ echo "$USERNAME:$USERNAME" | pct exec $INSTANCE_CT -- chpasswd
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt dist-upgrade -y
 
+set +x
+echo "==========================================================="
 echo "Go to https://remotedesktop.google.com/headless to enable CRD."
+echo "==========================================================="
 

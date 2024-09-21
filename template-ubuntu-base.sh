@@ -19,6 +19,9 @@ pct create $INSTANCE_CT local:vztmpl/ubuntu-24.04-standard_24.04-2_amd64.tar.zst
     --features nesting=1 \
     --unprivileged 1
 
+# Use a fast mirror
+pct exec $INSTANCE_CT -- sed -i 's/archive.ubuntu.com/ftp.uni-stuttgart.de/g' /etc/apt/sources.list
+
 pct exec $INSTANCE_CT -- sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 pct exec $INSTANCE_CT -- locale-gen
 pct exec $INSTANCE_CT -- update-locale LANG=en_US.UTF-8 LANGUAGE=en_US LC_ALL=en_US.UTF-8

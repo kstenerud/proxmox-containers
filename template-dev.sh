@@ -2,7 +2,7 @@
 
 set -eux
 
-MATE_CT=101
+SRC_CT=101
 TEMPLATE_CT=103
 
 GOLANG_VERSION=1.23.1
@@ -22,12 +22,18 @@ untar_remote_file() {
 	pct exec $TEMPLATE_CT -- rm /tmp/archive.tgz
 }
 
-pct clone $MATE_CT $TEMPLATE_CT --full 1
+pct clone $SRC_CT $TEMPLATE_CT --full 1
 pct set $TEMPLATE_CT \
     --hostname template \
     --memory 2048 \
     --net0 name=eth0,hwaddr=12:4B:53:00:00:99,ip=dhcp,ip6=dhcp,bridge=vmbr0
 pct resize $TEMPLATE_CT rootfs 10G
+# Passthrough GPU
+echo 'lxc.cgroup2.devices.allow: c 226:0 rwm
+lxc.cgroup2.devices.allow: c 226:128 rwm
+lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file
+lxc.hook.pre-start: sh -c "chown 0:108 /dev/dri/renderD128"
+' >> /etc/pve/lxc/${TEMPLATE_CT}.conf
 pct start $TEMPLATE_CT
 
 wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | pct exec $TEMPLATE_CT -- apt-key add -

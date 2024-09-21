@@ -31,10 +31,13 @@ echo "send dhcp-client-identifier = hardware;" | pct exec $INSTANCE_CT -- tee -a
 pct stop $INSTANCE_CT
 pct start $INSTANCE_CT
 
+# Use a fast mirror
+pct exec $INSTANCE_CT -- sed -i 's/deb.debian.org/ftp.uni-mainz.de/g' /etc/apt/sources.list
+
 pct exec $INSTANCE_CT -- sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 pct exec $INSTANCE_CT -- locale-gen
 pct exec $INSTANCE_CT -- update-locale LANG=en_US.UTF-8 LANGUAGE=en_US LC_ALL=en_US.UTF-8
-pct exec $INSTANCE_CT -- sed -i 's/bookworm[^ ]* main contrib$/& non-free/g' /etc/apt/sources.list
+pct exec $INSTANCE_CT -- sed -i 's/bookworm[^ ]* main contrib$/& non-free non-free-firmware/g' /etc/apt/sources.list
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt dist-upgrade -y
 
