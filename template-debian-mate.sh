@@ -4,13 +4,14 @@ set -eux
 
 TEMPLATE_CT=100
 INSTANCE_CT=101
+INSTANCE_NAME=template-debian-mate
 
 # Debian Mate Desktop Template
 
 pct clone $TEMPLATE_CT $INSTANCE_CT --full 1
 pct resize $INSTANCE_CT rootfs 4G
 pct set $INSTANCE_CT \
-    --hostname template \
+    --hostname ${INSTANCE_NAME} \
     --memory 2048 \
     --net0 name=eth0,hwaddr=12:4B:53:00:00:99,ip=dhcp,ip6=dhcp,bridge=vmbr0
 pct start $INSTANCE_CT
