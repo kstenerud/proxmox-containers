@@ -19,7 +19,7 @@ HOST_BASE_GID=100000
 # Script
 
 pct clone $TEMPLATE_CT $INSTANCE_CT --full 1
-pct resize $INSTANCE_CT rootfs 10G
+# pct resize $INSTANCE_CT rootfs 10G
 pct set $INSTANCE_CT \
     --onboot=1 \
     --hostname ${INSTANCE_NAME} \
