@@ -37,6 +37,9 @@ pct set $INSTANCE_CT \
     --net0     name=eth0,ip=dhcp,ip6=dhcp,bridge=vmbr0
 pct start $INSTANCE_CT
 
+echo "Waiting for DNS to be available..."
+sleep 5
+
 # Firefox repo
 apt_add_key $INSTANCE_CT mozilla https://packages.mozilla.org/apt/repo-signing-key.gpg 35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3
 apt_add_repo $INSTANCE_CT mozilla "https://packages.mozilla.org/apt mozilla main"

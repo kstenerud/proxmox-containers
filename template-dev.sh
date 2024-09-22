@@ -39,6 +39,9 @@ passthrough_gpu $INSTANCE_CT
 
 pct start $INSTANCE_CT
 
+echo "Waiting for DNS to be available..."
+sleep 5
+
 # Dev software
 
 apt_add_key $INSTANCE_CT sublime-text https://download.sublimetext.com/sublimehq-pub.gpg 1EDDE2CDFC025D17F6DA9EC0ADAE6AD28A8F901A
