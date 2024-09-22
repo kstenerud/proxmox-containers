@@ -39,10 +39,10 @@ untar_remote_file() {
 passthrough_gpu() {
     local instance_id="$1"
     echo 'lxc.cgroup2.devices.allow: c 226:0 rwm
-    lxc.cgroup2.devices.allow: c 226:128 rwm
-    lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file
-    lxc.hook.pre-start: sh -c "chown 0:108 /dev/dri/renderD128"
-    ' >> /etc/pve/lxc/${instance_id}.conf
+lxc.cgroup2.devices.allow: c 226:128 rwm
+lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file
+lxc.hook.pre-start: sh -c "chown 0:108 /dev/dri/renderD128"
+' >> /etc/pve/lxc/${instance_id}.conf
 }
 
 apt_add_key() {
@@ -75,16 +75,16 @@ apt_add_key2() {
     rm -f "$temp_key"
     rm -f "$temp_keyring"
 
-    wget -q "$url" -O "$temp_key"
-    local signature=$( gpg -n -q  --no-default-keyring --keyring "$temp_keyring" --import --import-options import-show "$temp_key" | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0;}' )
+    pct exec $instance_id -- wget -q "$url" -O "$temp_key"
+    local signature=$( pct exec $instance_id -- gpg -q --no-default-keyring --keyring "$temp_keyring" --import --import-options import-show "$temp_key" | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0;}' )
     if [ "$signature" != "$expected_signature" ]; then
         echo "Error: Expected signature [$expected_signature] but got [$signature]"
         return 1
     fi
 
-    gpg --no-default-keyring --keyring "$temp_keyring" --export --output "/etc/apt/keyrings/${key_name}.gpg"
-    rm -f "$temp_key"
-    rm -f "$temp_keyring"
+    pct exec $instance_id -- gpg --no-default-keyring --keyring "$temp_keyring" --export --output "/etc/apt/keyrings/${key_name}.gpg"
+    pct exec $instance_id -- rm -f "$temp_key"
+    pct exec $instance_id -- rm -f "$temp_keyring"
 }
 
 apt_add_repo2() {
