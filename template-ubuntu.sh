@@ -13,7 +13,6 @@ TEMPLATE_IMAGE="ubuntu-24.04-standard_24.04-2_amd64.tar.zst"
 
 INSTANCE_CT=200
 INSTANCE_NAME=template-ubuntu
-INSTANCE_ADDRESS=99
 INSTANCE_MEMORY=2048
 
 # ======
@@ -26,7 +25,7 @@ pct create $INSTANCE_CT local:vztmpl/${TEMPLATE_IMAGE} \
     --hostname ${INSTANCE_NAME} \
     --memory   ${INSTANCE_MEMORY} \
     --rootfs   local-lvm:1 \
-    --net0     name=eth0,hwaddr=12:4B:53:00:00:${INSTANCE_ADDRESS},ip=dhcp,ip6=dhcp,bridge=vmbr0 \
+    --net0     name=eth0,ip=dhcp,ip6=dhcp,bridge=vmbr0 \
     --ostype   ubuntu \
     --start    1 \
     --timezone host \

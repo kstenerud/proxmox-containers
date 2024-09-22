@@ -9,7 +9,6 @@ set -eux
 TEMPLATE_CT=101
 INSTANCE_CT=102
 INSTANCE_NAME=template-tx
-INSTANCE_ADDRESS=99
 INSTANCE_MEMORY=2048
 INSTANCE_DISK=10G
 
@@ -32,7 +31,7 @@ pct resize $INSTANCE_CT rootfs ${INSTANCE_DISK}
 pct set $INSTANCE_CT \
     --hostname ${INSTANCE_NAME} \
     --memory   ${INSTANCE_MEMORY} \
-    --net0     name=eth0,hwaddr=12:4B:53:00:00:${INSTANCE_ADDRESS},ip=dhcp,ip6=dhcp,bridge=vmbr0
+    --net0     name=eth0,ip=dhcp,ip6=dhcp,bridge=vmbr0
 
 passthrough_gpu $INSTANCE_CT
 
