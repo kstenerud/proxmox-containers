@@ -59,6 +59,8 @@ pct exec $INSTANCE_CT -- apt install vlc firefox
 
 pct exec $INSTANCE_CT -- flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
+install_remote_deb "http://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb"
+
 # Turn this into a template
 pct stop $INSTANCE_CT
 pct template $INSTANCE_CT

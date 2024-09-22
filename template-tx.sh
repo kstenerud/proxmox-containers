@@ -46,11 +46,9 @@ apt_add_key $INSTANCE_CT sublime-text https://download.sublimetext.com/sublimehq
 apt_add_repo $INSTANCE_CT sublime-text "https://download.sublimetext.com/ apt/stable/"
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt dist-upgrade -y
-pct exec $INSTANCE_CT -- apt install -y nmap transmission-remote-gtk amule-utils-gui mpv sublime-text
+pct exec $INSTANCE_CT -- apt install -y transmission-remote-gtk amule-utils-gui mpv sublime-text
 
 pct exec $INSTANCE_CT -- flatpak install -y https://flathub.org/repo/appstream/org.gimp.GIMP.flatpakref
-
-install_remote_deb "http://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb"
 
 # Delete dhcpv6 leases or else they'll never renew
 echo "rm /var/lib/dhcp/dhclient*" | pct exec $INSTANCE_CT -- sh

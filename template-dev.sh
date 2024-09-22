@@ -77,7 +77,6 @@ pct exec $INSTANCE_CT -- apt install -y \
 	sublime-text \
 
 install_remote_deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
-install_remote_deb "http://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb"
 
 untar_remote_file "https://go.dev/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz" "/usr/local"
 echo 'export PATH=$PATH:/usr/local/go/bin\n' | pct exec $INSTANCE_CT -- tee /etc/profile.d/golang.sh
