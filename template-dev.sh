@@ -30,7 +30,7 @@ run_remote_script() {
 	local url="$1"
 	shift
 	pct exec $INSTANCE_CT -- wget -qO /tmp/remote_script.sh "$url"
-	pct exec $INSTANCE_CT -- bash /tmp/remote_script.sh "%@"
+	pct exec $INSTANCE_CT -- bash /tmp/remote_script.sh "$@"
 	pct exec $INSTANCE_CT -- rm /tmp/remote_script.sh
 }
 
