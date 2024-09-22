@@ -2,14 +2,14 @@
 #
 # Debian 12 Template
 #
-# pveam download local debian-12-standard_12.2-1_amd64.tar.zst
-#
 
 set -eux
 
 # ============
 # Local config
 # ============
+
+TEMPLATE_IMAGE=debian-12-standard_12.7-1_amd64.tar.zst
 
 INSTANCE_CT=100
 INSTANCE_NAME=template-debian
@@ -20,7 +20,9 @@ INSTANCE_MEMORY=2048
 # Script
 # ======
 
-pct create $INSTANCE_CT local:vztmpl/debian-12-standard_12.2-1_amd64.tar.zst \
+pveam download local ${TEMPLATE_IMAGE} || true
+
+pct create $INSTANCE_CT local:vztmpl/${TEMPLATE_IMAGE} \
     --hostname ${INSTANCE_NAME} \
     --memory   ${INSTANCE_MEMORY} \
     --rootfs   local-lvm:1 \

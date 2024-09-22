@@ -2,14 +2,14 @@
 #
 # Ubuntu 24.04 Template
 #
-# pveam download local ubuntu-24.04-standard_24.04-2_amd64.tar.zst
-#
 
 set -eux
 
 # ============
 # Local config
 # ============
+
+TEMPLATE=ubuntu-24.04-standard_24.04-2_amd64.tar.zst
 
 INSTANCE_CT=200
 INSTANCE_NAME=template-ubuntu
@@ -20,7 +20,9 @@ INSTANCE_MEMORY=2048
 # Script
 # ======
 
-pct create $INSTANCE_CT local:vztmpl/ubuntu-24.04-standard_24.04-2_amd64.tar.zst \
+pveam download local ${TEMPLATE_IMAGE} || true
+
+pct create $INSTANCE_CT local:vztmpl/${TEMPLATE_IMAGE} \
     --hostname ${INSTANCE_NAME} \
     --memory   ${INSTANCE_MEMORY} \
     --rootfs   local-lvm:1 \
