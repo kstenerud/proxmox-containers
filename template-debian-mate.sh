@@ -25,8 +25,8 @@ pct resize $INSTANCE_CT rootfs ${INSTANCE_DISK}
 pct set $INSTANCE_CT \
     --hostname ${INSTANCE_NAME} \
     --memory   ${INSTANCE_MEMORY} \
-    --net0     name=eth0,hwaddr=12:4B:53:00:00:${INSTANCE_ADDRESS},ip=dhcp,ip6=dhcp,bridge=vmbr0 \
-    --start    1
+    --net0     name=eth0,hwaddr=12:4B:53:00:00:${INSTANCE_ADDRESS},ip=dhcp,ip6=dhcp,bridge=vmbr0
+pct start $INSTANCE_CT
 
 # Firefox repo
 pct exec $INSTANCE_CT -- wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O /etc/apt/keyrings/packages.mozilla.org.asc
