@@ -28,9 +28,9 @@ pct_destroy 103
 pct_destroy 200
 pct_destroy 201
 
-run_builder template_ubuntu.sh
-run_builder template_plex.sh
-run_builder template_debian.sh
-run_builder template_debian-mate.sh
-run_builder template_dev.sh
-run_builder template_tx.sh
+run_builder template-ubuntu.sh
+run_builder template-plex.sh
+run_builder template-debian.sh
+run_builder template-debian-mate.sh
+run_builder template-dev.sh
+run_builder template-tx.sh
