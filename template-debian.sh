@@ -9,7 +9,7 @@ set -eux
 # Local config
 # ============
 
-TEMPLATE_IMAGE=debian-12-standard_12.7-1_amd64.tar.zst
+TEMPLATE_IMAGE="debian-12-standard_12.7-1_amd64.tar.zst"
 
 INSTANCE_CT=100
 INSTANCE_NAME=template-debian

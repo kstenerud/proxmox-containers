@@ -9,7 +9,7 @@ set -eux
 # Local config
 # ============
 
-TEMPLATE=ubuntu-24.04-standard_24.04-2_amd64.tar.zst
+TEMPLATE_IMAGE="ubuntu-24.04-standard_24.04-2_amd64.tar.zst"
 
 INSTANCE_CT=200
 INSTANCE_NAME=template-ubuntu
