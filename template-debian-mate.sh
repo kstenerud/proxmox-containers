@@ -41,7 +41,7 @@ Pin-Priority: 1000
 # Install desktop environment
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt dist-upgrade -y
-pct exec $INSTANCE_CT -- apt install sudo git gnupg locales net-tools nmap telnet tree tzdata unzip
+pct exec $INSTANCE_CT -- apt install sudo git gnupg locales net-tools nmap telnet tree tzdata unzip samba
 pct exec $INSTANCE_CT -- apt install mate-desktop-environment mate-desktop-environment-extras mate-themes mate-tweak avahi-daemon webp libavif-gdk-pixbuf unrar rar p7zip-rar
 pct exec $INSTANCE_CT -- apt install flatpak gnome-software-plugin-flatpak
 pct exec $INSTANCE_CT -- apt install vlc firefox

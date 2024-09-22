@@ -89,7 +89,6 @@ pct exec $INSTANCE_CT -- apt install -y \
 	pkg-config \
 	python3-pip \
 	python3-pytest \
-	samba \
 	sublime-text \
 
 install_remote_deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
