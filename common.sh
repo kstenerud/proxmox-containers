@@ -45,25 +45,12 @@ lxc.hook.pre-start: sh -c "chown 0:108 /dev/dri/renderD128"
 ' >> /etc/pve/lxc/${instance_id}.conf
 }
 
-apt_add_key() {
-    local instance_id="$1"
-    local url="$2"
-    wget -qO - "$url" | pct exec $instance_id -- apt-key add -
-}
-
-apt_add_repo() {
-    local instance_id="$1"
-    local name="$2"
-    local repo="$3"
-    echo "$repo" | pct exec $instance_id -- tee /etc/apt/sources.list.d/${name}.list
-}
-
 clear_dhcp_leases() {
     local instance_id="$1"
     echo "rm /var/lib/dhcp/dhclient*" | pct exec $instance_id -- sh
 }
 
-apt_add_key2() {
+apt_add_key() {
     # https://askubuntu.com/questions/1286545/what-commands-exactly-should-replace-the-deprecated-apt-key
     local instance_id="$1"
     local key_name="$2"
@@ -87,7 +74,7 @@ apt_add_key2() {
     pct exec $instance_id -- rm -f "$temp_keyring"
 }
 
-apt_add_repo2() {
+apt_add_repo() {
     local instance_id="$1"
     local name="$2"
     local repo="$3"

@@ -43,8 +43,8 @@ pct exec $INSTANCE_CT -- apt dist-upgrade -y
 pct exec $INSTANCE_CT -- apt install -y samba
 
 # Install Plex
-apt_add_key $INSTANCE_CT https://downloads.plex.tv/plex-keys/PlexSign.key
-apt_add_repo $INSTANCE_CT plexmediaserver "deb https://downloads.plex.tv/repo/deb public main"
+apt_add_key $INSTANCE_CT plexmediaserver https://downloads.plex.tv/plex-keys/PlexSign.key CD665CBA0E2F88B7373F7CB997203C7B3ADCA79D
+apt_add_repo $INSTANCE_CT plexmediaserver "https://downloads.plex.tv/repo/deb public main"
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt install -y plexmediaserver
 

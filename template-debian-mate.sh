@@ -29,9 +29,8 @@ pct set $INSTANCE_CT \
 pct start $INSTANCE_CT
 
 # Firefox repo
-pct exec $INSTANCE_CT -- wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O /etc/apt/keyrings/packages.mozilla.org.asc
-pct exec $INSTANCE_CT -- gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc | awk '/pub/{getline; gsub(/^ +| +$/,""); if($0 == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3") print "\nThe key fingerprint matches ("$0").\n"; else {print "\nVerification failed: the fingerprint ("$0") does not match the expected one.\n"; exit 1}}'
-echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | pct exec $INSTANCE_CT -- tee /etc/apt/sources.list.d/mozilla.list
+apt_add_key $INSTANCE_CT mozilla https://packages.mozilla.org/apt/repo-signing-key.gp 35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3
+apt_add_repo $INSTANCE_CT mozilla "https://packages.mozilla.org/apt mozilla main"
 echo '
 Package: *
 Pin: origin packages.mozilla.org

@@ -40,8 +40,8 @@ pct start $INSTANCE_CT
 
 # Software
 
-apt_add_key $INSTANCE_CT https://download.sublimetext.com/sublimehq-pub.gpg
-apt_add_repo $INSTANCE_CT sublime-text "deb https://download.sublimetext.com/ apt/stable/"
+apt_add_key $INSTANCE_CT sublime-text https://download.sublimetext.com/sublimehq-pub.gpg 1EDDE2CDFC025D17F6DA9EC0ADAE6AD28A8F901A
+apt_add_repo $INSTANCE_CT sublime-text "https://download.sublimetext.com/ apt/stable/"
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt dist-upgrade -y
 pct exec $INSTANCE_CT -- apt install -y nmap transmission-remote-gtk amule-utils-gui mpv sublime-text
