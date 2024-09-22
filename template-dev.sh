@@ -19,28 +19,15 @@ GOLANG_VERSION=1.23.1
 # Script
 # ======
 
-install_remote_deb() {
-	local url="$1"
-	pct exec $INSTANCE_CT -- wget -qO /tmp/installer.deb "$url"
-	pct exec $INSTANCE_CT -- bash -c "export DEBIAN_FRONTEND=noninteractive; apt install -y /tmp/installer.deb"
-	pct exec $INSTANCE_CT -- rm /tmp/installer.deb
-}
-
-run_remote_script() {
-	local url="$1"
-	shift
-	pct exec $INSTANCE_CT -- wget -qO /tmp/remote_script.sh "$url"
-	pct exec $INSTANCE_CT -- bash /tmp/remote_script.sh "$@"
-	pct exec $INSTANCE_CT -- rm /tmp/remote_script.sh
-}
-
-untar_remote_file() {
-	local url="$1"
-	local path="$2"
-	pct exec $INSTANCE_CT -- wget -qO /tmp/archive.tgz "$url"
-	pct exec $INSTANCE_CT -- tar -C "$path" -xf /tmp/archive.tgz
-	pct exec $INSTANCE_CT -- rm /tmp/archive.tgz
-}
+SCRIPT_PATH=${BASH_SOURCE[0]}
+while [ -L "$SCRIPT_PATH" ]; do
+    SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+    SCRIPT_PATH=$(readlink "$SCRIPT_PATH")
+    [[ $SCRIPT_PATH != /* ]] && SCRIPT_PATH=$SCRIPT_DIR/$SCRIPT_PATH
+done
+SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${SCRIPT_PATH}")"
+source "$SCRIPT_DIR/common.sh"
 
 pct clone $TEMPLATE_CT $INSTANCE_CT --full 1
 pct resize $INSTANCE_CT rootfs ${INSTANCE_DISK}
@@ -49,18 +36,14 @@ pct set $INSTANCE_CT \
     --memory   ${INSTANCE_MEMORY} \
     --net0     name=eth0,hwaddr=12:4B:53:00:00:${INSTANCE_ADDRESS},ip=dhcp,ip6=dhcp,bridge=vmbr0
 
-# Passthrough GPU
-echo 'lxc.cgroup2.devices.allow: c 226:0 rwm
-lxc.cgroup2.devices.allow: c 226:128 rwm
-lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file
-lxc.hook.pre-start: sh -c "chown 0:108 /dev/dri/renderD128"
-' >> /etc/pve/lxc/${INSTANCE_CT}.conf
+passthrough_gpu $INSTANCE_CT
+
 pct start $INSTANCE_CT
 
 # Dev software
 
-wget -qO - https://download.sublimetext.com/sublimehq-pub.gpg | pct exec $INSTANCE_CT -- apt-key add -
-echo "deb https://download.sublimetext.com/ apt/stable/" | pct exec $INSTANCE_CT -- tee /etc/apt/sources.list.d/sublime-text.list
+apt_add_key2 $INSTANCE_CT sublime-text https://download.sublimetext.com/sublimehq-pub.gpg 1EDDE2CDFC025D17F6DA9EC0ADAE6AD28A8F901A
+apt_add_repo2 $INSTANCE_CT sublime-text "https://download.sublimetext.com/ apt/stable/"
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt dist-upgrade -y
 pct exec $INSTANCE_CT -- apt install -y \
