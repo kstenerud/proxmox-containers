@@ -62,7 +62,7 @@ apt_add_key() {
     rm -f "$temp_key"
     rm -f "$temp_keyring"
 
-    pct exec $instance_id -- wget -q "$url" -O "$temp_key"
+    pct exec $instance_id -- wget "$url" -O "$temp_key"
     local signature=$( pct exec $instance_id -- gpg -q --no-default-keyring --keyring "$temp_keyring" --import --import-options import-show "$temp_key" | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0;}' )
     if [ "$signature" != "$expected_signature" ]; then
         echo "Error: Expected signature [$expected_signature] but got [$signature]"

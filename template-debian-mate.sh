@@ -39,7 +39,7 @@ pct set $INSTANCE_CT \
 pct start $INSTANCE_CT
 
 # Firefox repo
-apt_add_key $INSTANCE_CT mozilla https://packages.mozilla.org/apt/repo-signing-key.gp 35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3
+apt_add_key $INSTANCE_CT mozilla https://packages.mozilla.org/apt/repo-signing-key.gpg 35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3
 apt_add_repo $INSTANCE_CT mozilla "https://packages.mozilla.org/apt mozilla main"
 echo '
 Package: *
