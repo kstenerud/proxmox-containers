@@ -20,6 +20,6 @@ Watch your step and wear a hardhat!
 
 ## Containers
 
-* `dev`: My dev environment
-* `tx`: My "transfer" environment. Basically a clean web browser and such that can be erased.
+* `dev`: My dev virtual desktop environment
+* `tx`: My "transfer" virtual desktop environment. Basically a clean web browser and such that can be erased.
 * `plex`: Plex media server. Connects to my NAS via the host, which connects over SAMBA (so that the container remains unprivileged).
