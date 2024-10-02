@@ -1,12 +1,16 @@
-Notes
------
+Proxmox Container and Host Scripts
+==================================
 
-Should in theory need this for GPU passthrough:
+This wasn't intended for public release, but I'm doing so for people who have asked about it.
 
-echo 'lxc.cgroup2.devices.allow: c 226:0 rwm
-lxc.cgroup2.devices.allow: c 226:128 rwm
-lxc.mount.entry: /dev/dri/renderD128 dev/dri/renderD128 none bind,optional,create=file
-lxc.hook.pre-start: sh -c "chown 0:108 /dev/dri/renderD128"' >>/etc/pve/lxc/20001.conf
+Watch your step and wear a hardhat!
 
-But it seems to get automatically created?
 
+## General layout
+
+* `setup-XYZ`: Setup scripts for the host Proxmox systems. These are kept simple.
+* `common.sh`: Common functions
+* `template-XYZ.sh`: Creates a template for a particular kind of software
+* `instance-XYZ.sh`: Creates a running instance of a particular template
+* `dev`: My dev environment
+* `tx`: My "transfer" environment. Basically a clean web browser and such that can be erased.
