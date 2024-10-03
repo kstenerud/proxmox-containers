@@ -1,13 +1,30 @@
 #!/usr/bin/env bash
 
-set -eux
+set -Eeu -o pipefail
+
+# =======
+# Imports
+# =======
+
+SCRIPT_PATH=${BASH_SOURCE[0]}
+while [ -L "$SCRIPT_PATH" ]; do
+    SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+    SCRIPT_PATH=$(readlink "$SCRIPT_PATH")
+    [[ $SCRIPT_PATH != /* ]] && SCRIPT_PATH=$SCRIPT_DIR/$SCRIPT_PATH
+done
+SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${SCRIPT_PATH}")"
+source "$SCRIPT_DIR/common.sh"
+source "$SCRIPT_DIR/registry.sh"
+
+set -x
 
 # ============
 # Local config
 # ============
 
-TEMPLATE_CT=102
-INSTANCE_CT=10000
+TEMPLATE_CT=$(registry_get_dependency instance-tx)
+INSTANCE_CT=$(registry_get_id instance-tx)
 INSTANCE_NAME=tx
 INSTANCE_ADDRESS=22
 INSTANCE_MEMORY=32768
@@ -18,8 +35,6 @@ INSTANCE_USERNAME=karl
 # ===========
 
 HOST_DATA=/home/data
-HOST_BASE_UID=100000
-HOST_BASE_GID=100000
 
 # ======
 # Script
@@ -37,6 +52,9 @@ mkdir -p /home/data/${INSTANCE_NAME}/home
 chown ${HOST_BASE_UID}:${HOST_BASE_GID} ${HOST_DATA}/${INSTANCE_NAME}
 chown ${HOST_BASE_UID}:${HOST_BASE_GID} ${HOST_DATA}/${INSTANCE_NAME}/home
 pct set $INSTANCE_CT -mp0 ${HOST_DATA}/${INSTANCE_NAME}/home,mp=/home
+
+# Files mount
+pct set $INSTANCE_CT -mp1 /mnt/containers/files,mp=/mnt/files
 
 pct start $INSTANCE_CT
 

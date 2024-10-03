@@ -1,13 +1,30 @@
 #!/usr/bin/env bash
 
-set -eux
+set -Eeu -o pipefail
+
+# =======
+# Imports
+# =======
+
+SCRIPT_PATH=${BASH_SOURCE[0]}
+while [ -L "$SCRIPT_PATH" ]; do
+    SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+    SCRIPT_PATH=$(readlink "$SCRIPT_PATH")
+    [[ $SCRIPT_PATH != /* ]] && SCRIPT_PATH=$SCRIPT_DIR/$SCRIPT_PATH
+done
+SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${SCRIPT_PATH}")"
+source "$SCRIPT_DIR/common.sh"
+source "$SCRIPT_DIR/registry.sh"
+
+set -x
 
 # ============
 # Local config
 # ============
 
-TEMPLATE_CT=103
-INSTANCE_CT=10001
+TEMPLATE_CT=$(registry_get_dependency instance-dev)
+INSTANCE_CT=$(registry_get_id instance-dev)
 INSTANCE_NAME=dev
 INSTANCE_ADDRESS=21
 INSTANCE_MEMORY=16384
@@ -18,8 +35,6 @@ INSTANCE_USERNAME=karl
 # ===========
 
 HOST_DATA=/home/data
-HOST_BASE_UID=100000
-HOST_BASE_GID=100000
 
 # ======
 # Script

@@ -2,22 +2,14 @@
 #
 # Debian Mate Desktop Template
 #
+# Accessible via Chrome Remote Desktop, and uses GPU passthrough.
+#
 
-set -eux
+set -Eeu -o pipefail
 
-# ============
-# Local config
-# ============
-
-TEMPLATE_CT=100
-INSTANCE_CT=101
-INSTANCE_NAME=template-debian-mate
-INSTANCE_MEMORY=2048
-INSTANCE_DISK=4G
-
-# ======
-# Script
-# ======
+# =======
+# Imports
+# =======
 
 SCRIPT_PATH=${BASH_SOURCE[0]}
 while [ -L "$SCRIPT_PATH" ]; do
@@ -28,6 +20,23 @@ done
 SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
 SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${SCRIPT_PATH}")"
 source "$SCRIPT_DIR/common.sh"
+source "$SCRIPT_DIR/registry.sh"
+
+set -x
+
+# ============
+# Local config
+# ============
+
+TEMPLATE_CT=$(registry_get_dependency template-debian-mate)
+INSTANCE_CT=$(registry_get_id template-debian-mate)
+INSTANCE_NAME=template-debian-mate
+INSTANCE_MEMORY=2048
+INSTANCE_DISK=4G
+
+# ======
+# Script
+# ======
 
 pct clone $TEMPLATE_CT $INSTANCE_CT --full 1
 pct resize $INSTANCE_CT rootfs ${INSTANCE_DISK}
@@ -41,8 +50,8 @@ echo "Waiting for DNS to be available..."
 sleep 5
 
 # Firefox repo
-apt_add_key $INSTANCE_CT mozilla https://packages.mozilla.org/apt/repo-signing-key.gpg 35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3
-apt_add_repo $INSTANCE_CT mozilla "https://packages.mozilla.org/apt mozilla main"
+pct_apt_add_key $INSTANCE_CT mozilla https://packages.mozilla.org/apt/repo-signing-key.gpg 35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3
+pct_apt_add_repo $INSTANCE_CT mozilla "https://packages.mozilla.org/apt mozilla main"
 echo '
 Package: *
 Pin: origin packages.mozilla.org
@@ -59,7 +68,7 @@ pct exec $INSTANCE_CT -- apt install vlc firefox
 
 pct exec $INSTANCE_CT -- flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
-install_remote_deb "http://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb"
+pct_install_remote_deb $INSTANCE_CT "http://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb"
 
 # Turn this into a template
 pct stop $INSTANCE_CT

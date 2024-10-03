@@ -3,7 +3,24 @@
 # Debian 12 Template
 #
 
-set -eux
+set -Eeu -o pipefail
+
+# =======
+# Imports
+# =======
+
+SCRIPT_PATH=${BASH_SOURCE[0]}
+while [ -L "$SCRIPT_PATH" ]; do
+    SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+    SCRIPT_PATH=$(readlink "$SCRIPT_PATH")
+    [[ $SCRIPT_PATH != /* ]] && SCRIPT_PATH=$SCRIPT_DIR/$SCRIPT_PATH
+done
+SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${SCRIPT_PATH}")"
+source "$SCRIPT_DIR/common.sh"
+source "$SCRIPT_DIR/registry.sh"
+
+set -x
 
 # ============
 # Local config
@@ -11,7 +28,7 @@ set -eux
 
 TEMPLATE_IMAGE="debian-12-standard_12.7-1_amd64.tar.zst"
 
-INSTANCE_CT=100
+INSTANCE_CT=$(registry_get_id template-debian)
 INSTANCE_NAME=template-debian
 INSTANCE_MEMORY=2048
 

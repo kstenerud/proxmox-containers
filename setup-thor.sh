@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
-set -eux
+set -Eeux -o pipefail
+
+# ======
+# Config
+# ======
 
 DATA_SIZE=600GiB
+
+# ======
+# Script
+# ======
 
 # Switch to free mode
 rm /etc/apt/sources.list.d/ceph.list

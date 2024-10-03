@@ -1,13 +1,30 @@
 #!/usr/bin/env bash
 
-set -eux
+set -Eeu -o pipefail
+
+# =======
+# Imports
+# =======
+
+SCRIPT_PATH=${BASH_SOURCE[0]}
+while [ -L "$SCRIPT_PATH" ]; do
+    SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+    SCRIPT_PATH=$(readlink "$SCRIPT_PATH")
+    [[ $SCRIPT_PATH != /* ]] && SCRIPT_PATH=$SCRIPT_DIR/$SCRIPT_PATH
+done
+SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${SCRIPT_PATH}")"
+source "$SCRIPT_DIR/common.sh"
+source "$SCRIPT_DIR/registry.sh"
+
+set -x
 
 # ============
 # Local config
 # ============
 
-TEMPLATE_CT=201
-INSTANCE_CT=20001
+TEMPLATE_CT=$(registry_get_dependency instance-plex)
+INSTANCE_CT=$(registry_get_id instance-plex)
 INSTANCE_NAME=plex
 INSTANCE_ADDRESS=99
 INSTANCE_MEMORY=2048
@@ -17,8 +34,6 @@ INSTANCE_MEMORY=2048
 # ===========
 
 HOST_DATA=/home/data
-HOST_BASE_UID=100000
-HOST_BASE_GID=100000
 
 # ======
 # Script
@@ -32,7 +47,8 @@ pct set $INSTANCE_CT \
     --net0     name=eth0,hwaddr=12:4B:53:00:00:${INSTANCE_ADDRESS},ip=dhcp,ip6=dhcp,bridge=vmbr0
 
 # Mount the media dir
-pct set $INSTANCE_CT -mp0 /mnt/containers/media,mp=/media
+pct set $INSTANCE_CT -mp1 /mnt/containers/media,mp=/mnt/media
+pct set $INSTANCE_CT -mp2 /mnt/containers/files/p,mp=/mnt/p
 
 # Get the UID and GID of the plex user
 pct start $INSTANCE_CT
@@ -46,7 +62,7 @@ pct stop $INSTANCE_CT
 mkdir -p /home/data/${INSTANCE_NAME}/var-lib-plexmediaserver
 chown -R ${PLEX_HOST_UID}:${PLEX_HOST_GID} ${HOST_DATA}/${INSTANCE_NAME}
 chown -R ${PLEX_HOST_UID}:${PLEX_HOST_GID} ${HOST_DATA}/${INSTANCE_NAME}/var-lib-plexmediaserver
-pct set $INSTANCE_CT -mp1 ${HOST_DATA}/${INSTANCE_NAME}/var-lib-plexmediaserver,mp=/var/lib/plexmediaserver
+pct set $INSTANCE_CT -mp0 ${HOST_DATA}/${INSTANCE_NAME}/var-lib-plexmediaserver,mp=/var/lib/plexmediaserver
 
 pct start $INSTANCE_CT
 pct exec $INSTANCE_CT -- apt update

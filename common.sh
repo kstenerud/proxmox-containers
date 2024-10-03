@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
-set -eux
+set -Eeu -o pipefail
 
+#
+# Common functions used in the other scripts.
+#
+# Be sure to use a robust sourcing mechanism, such as:
+#
 # SCRIPT_PATH=${BASH_SOURCE[0]}
 # while [ -L "$SCRIPT_PATH" ]; do
 #     SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
@@ -11,32 +16,13 @@ set -eux
 # SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
 # SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${SCRIPT_PATH}")"
 # source "$SCRIPT_DIR/common.sh"
+#
 
+# When mapping UIDs and GIDs for file ownership, the host side adds 100000
+HOST_BASE_UID=100000
+HOST_BASE_GID=100000
 
-install_remote_deb() {
-    local url="$1"
-    pct exec $INSTANCE_CT -- wget -qO /tmp/installer.deb "$url"
-    pct exec $INSTANCE_CT -- bash -c "export DEBIAN_FRONTEND=noninteractive; apt install -y /tmp/installer.deb"
-    pct exec $INSTANCE_CT -- rm /tmp/installer.deb
-}
-
-run_remote_script() {
-    local url="$1"
-    shift
-    pct exec $INSTANCE_CT -- wget -qO /tmp/remote_script.sh "$url"
-    pct exec $INSTANCE_CT -- bash /tmp/remote_script.sh "$@"
-    pct exec $INSTANCE_CT -- rm /tmp/remote_script.sh
-}
-
-untar_remote_file() {
-    local url="$1"
-    local path="$2"
-    pct exec $INSTANCE_CT -- wget -qO /tmp/archive.tgz "$url"
-    pct exec $INSTANCE_CT -- tar -C "$path" -xf /tmp/archive.tgz
-    pct exec $INSTANCE_CT -- rm /tmp/archive.tgz
-}
-
-passthrough_gpu() {
+host_passthrough_gpu() {
     local instance_id="$1"
     echo 'lxc.cgroup2.devices.allow: c 226:0 rwm
 lxc.cgroup2.devices.allow: c 226:128 rwm
@@ -45,12 +31,39 @@ lxc.hook.pre-start: sh -c "chown 0:108 /dev/dri/renderD128"
 ' >> /etc/pve/lxc/${instance_id}.conf
 }
 
-clear_dhcp_leases() {
+pct_install_remote_deb() {
+    local instance_id="$1"
+    local url="$2"
+    pct exec $instance_id -- wget -qO /tmp/installer.deb "$url"
+    pct exec $instance_id -- bash -c "export DEBIAN_FRONTEND=noninteractive; apt install -y /tmp/installer.deb"
+    pct exec $instance_id -- rm /tmp/installer.deb
+}
+
+pct_run_remote_script() {
+    local instance_id="$1"
+    local url="$2"
+    shift
+    shift
+    pct exec $instance_id -- wget -qO /tmp/remote_script.sh "$url"
+    pct exec $instance_id -- bash /tmp/remote_script.sh "$@"
+    pct exec $instance_id -- rm /tmp/remote_script.sh
+}
+
+pct_untar_remote_file() {
+    local instance_id="$1"
+    local url="$2"
+    local path="$3"
+    pct exec $instance_id -- wget -qO /tmp/archive.tgz "$url"
+    pct exec $instance_id -- tar -C "$path" -xf /tmp/archive.tgz
+    pct exec $instance_id -- rm /tmp/archive.tgz
+}
+
+pct_clear_dhcp_leases() {
     local instance_id="$1"
     echo "rm /var/lib/dhcp/dhclient*" | pct exec $instance_id -- sh
 }
 
-apt_add_key() {
+pct_apt_add_key() {
     # https://askubuntu.com/questions/1286545/what-commands-exactly-should-replace-the-deprecated-apt-key
     local instance_id="$1"
     local key_name="$2"
@@ -74,7 +87,7 @@ apt_add_key() {
     pct exec $instance_id -- rm -f "$temp_keyring"
 }
 
-apt_add_repo() {
+pct_apt_add_repo() {
     local instance_id="$1"
     local name="$2"
     local repo="$3"

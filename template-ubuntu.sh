@@ -3,7 +3,24 @@
 # Ubuntu 24.04 Template
 #
 
-set -eux
+set -Eeu -o pipefail
+
+# =======
+# Imports
+# =======
+
+SCRIPT_PATH=${BASH_SOURCE[0]}
+while [ -L "$SCRIPT_PATH" ]; do
+    SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+    SCRIPT_PATH=$(readlink "$SCRIPT_PATH")
+    [[ $SCRIPT_PATH != /* ]] && SCRIPT_PATH=$SCRIPT_DIR/$SCRIPT_PATH
+done
+SCRIPT_DIR=$( cd -P "$( dirname "$SCRIPT_PATH" )" >/dev/null 2>&1 && pwd )
+SCRIPT_PATH="${SCRIPT_DIR}/$(basename "${SCRIPT_PATH}")"
+source "$SCRIPT_DIR/common.sh"
+source "$SCRIPT_DIR/registry.sh"
+
+set -x
 
 # ============
 # Local config
@@ -11,7 +28,7 @@ set -eux
 
 TEMPLATE_IMAGE="ubuntu-24.04-standard_24.04-2_amd64.tar.zst"
 
-INSTANCE_CT=200
+INSTANCE_CT=$(registry_get_id template-ubuntu)
 INSTANCE_NAME=template-ubuntu
 INSTANCE_MEMORY=2048
 
