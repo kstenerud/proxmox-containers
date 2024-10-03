@@ -26,7 +26,7 @@ set -x
 TEMPLATE_CT=$(registry_get_dependency instance-plex)
 INSTANCE_CT=$(registry_get_id instance-plex)
 INSTANCE_NAME=plex
-INSTANCE_ADDRESS=99
+INSTANCE_ADDRESS=12
 INSTANCE_MEMORY=2048
 
 # ===========

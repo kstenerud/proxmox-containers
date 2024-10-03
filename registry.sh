@@ -76,9 +76,11 @@ register_container template-ubuntu      200 -
 register_container template-debian-mate 101 template-debian
 register_container template-tx          102 template-debian-mate
 register_container template-dev         103 template-debian-mate
+register_container template-kms         104 template-debian
 register_container template-plex        201 template-ubuntu
 
 # Instances. Numbered higher so they're easier to identify.
 register_container instance-tx        10000 template-tx
 register_container instance-dev       10001 template-dev
 register_container instance-plex      10002 template-plex
+register_container instance-kms       10003 template-kms

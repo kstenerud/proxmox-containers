@@ -58,6 +58,29 @@ pct_untar_remote_file() {
     pct exec $instance_id -- rm /tmp/archive.tgz
 }
 
+pct_clone_git_repo() {
+    local instance_id="$1"
+    local url="$2"
+    local path="$3"
+    pct exec $instance_id -- git clone --recurse-submodules -j8 "$url" "$path"
+}
+
+pct_install_deb_from_src() {
+    local instance_id="$1"
+    local src_dir="$2"
+    echo "#!/usr/bin/env bash
+set Eeux -o pipefail
+mkdir -p /tmp/deb_build
+cp -a \"$src_dir\" /tmp/deb_build/src
+pushd /tmp/deb_build/src
+dpkg-buildpackage -rfakeroot -b -uc -us
+export DEBIAN_FRONTEND=noninteractive
+apt install -y /tmp/deb_build/*.deb
+popd
+rm -rf /tmp/deb_build
+" | pct exec $instance_id -- bash
+}
+
 pct_clear_dhcp_leases() {
     local instance_id="$1"
     echo "rm /var/lib/dhcp/dhclient*" | pct exec $instance_id -- sh
