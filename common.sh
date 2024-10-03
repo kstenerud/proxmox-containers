@@ -95,8 +95,8 @@ pct_apt_add_key() {
 
     local temp_key=/tmp/key.asc
     local temp_keyring=/tmp/temp-keyring.gpg
-    rm -f "$temp_key"
-    rm -f "$temp_keyring"
+    pct exec $instance_id -- rm -f "$temp_key"
+    pct exec $instance_id -- rm -f "$temp_keyring"
 
     pct exec $instance_id -- wget "$url" -O "$temp_key"
     local signature=$( pct exec $instance_id -- gpg -q --no-default-keyring --keyring "$temp_keyring" --import --import-options import-show "$temp_key" | awk '/pub/{getline; gsub(/^ +| +$/,""); print $0;}' )
