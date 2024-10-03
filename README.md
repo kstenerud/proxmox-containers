@@ -49,5 +49,6 @@ You'll want to change these for your own topography.
 
 * `dev`: My dev virtual desktop environment
 * `tx`: My "transfer" virtual desktop environment. Basically a clean web browser and such that can be erased.
+* `emergency`: My emergency virtual desktop environment (in case the main host goes down)
 * `plex`: Plex media server. Connects to my NAS via the host, which connects over SAMBA (so that the container remains unprivileged).
 * `kms`: Key management server for windows

@@ -84,3 +84,4 @@ register_container instance-tx        10000 template-tx
 register_container instance-dev       10001 template-dev
 register_container instance-plex      10002 template-plex
 register_container instance-kms       10003 template-kms
+register_container instance-emergency 19999 template-debian-mate
