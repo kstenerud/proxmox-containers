@@ -31,12 +31,24 @@ lxc.hook.pre-start: sh -c "chown 0:108 /dev/dri/renderD128"
 ' >> /etc/pve/lxc/${instance_id}.conf
 }
 
+
+pct_run_simple_bash_script() {
+    local instance_id="$1"
+    pct exec $instance_id -- bash -c "set -Eeux -o pipefail
+$2
+"
+}
+
 pct_install_remote_deb() {
     local instance_id="$1"
     local url="$2"
-    pct exec $instance_id -- wget -qO /tmp/installer.deb "$url"
-    pct exec $instance_id -- bash -c "export DEBIAN_FRONTEND=noninteractive; apt install -y /tmp/installer.deb"
-    pct exec $instance_id -- rm /tmp/installer.deb
+    local user_agent="Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/111.0"
+    pct exec $instance_id -- wget --user-agent="$user_agent" -O /tmp/installer.deb "$url"
+    pct_run_simple_bash_script $instance_id "
+export DEBIAN_FRONTEND=noninteractive
+apt install -y /tmp/installer.deb
+rm /tmp/installer.deb
+"
 }
 
 pct_run_remote_script() {
@@ -44,7 +56,7 @@ pct_run_remote_script() {
     local url="$2"
     shift
     shift
-    pct exec $instance_id -- wget -qO /tmp/remote_script.sh "$url"
+    pct exec $instance_id -- wget -O /tmp/remote_script.sh "$url"
     pct exec $instance_id -- bash /tmp/remote_script.sh "$@"
     pct exec $instance_id -- rm /tmp/remote_script.sh
 }
@@ -53,7 +65,7 @@ pct_untar_remote_file() {
     local instance_id="$1"
     local url="$2"
     local path="$3"
-    pct exec $instance_id -- wget -qO /tmp/archive.tgz "$url"
+    pct exec $instance_id -- wget -O /tmp/archive.tgz "$url"
     pct exec $instance_id -- tar -C "$path" -xf /tmp/archive.tgz
     pct exec $instance_id -- rm /tmp/archive.tgz
 }
@@ -61,15 +73,19 @@ pct_untar_remote_file() {
 pct_clone_git_repo() {
     local instance_id="$1"
     local url="$2"
-    local path="$3"
-    pct exec $instance_id -- git clone --recurse-submodules -j8 "$url" "$path"
+    local branch="$3"
+    local path="$4"
+    if [ -z "$branch" || "$branch" == "-" ]; then
+        pct exec $instance_id -- git clone --depth 1 --recurse-submodules -j8 "$url" "$path"
+    else
+        pct exec $instance_id -- git clone --depth 1 --recurse-submodules -j8 --branch "$branch" "$url" "$path"
+    fi
 }
 
 pct_install_deb_from_src() {
     local instance_id="$1"
     local src_dir="$2"
-    echo "#!/usr/bin/env bash
-set Eeux -o pipefail
+    pct_run_simple_bash_script $instance_id "
 mkdir -p /tmp/deb_build
 cp -a \"$src_dir\" /tmp/deb_build/src
 pushd /tmp/deb_build/src
@@ -78,12 +94,12 @@ export DEBIAN_FRONTEND=noninteractive
 apt install -y /tmp/deb_build/*.deb
 popd
 rm -rf /tmp/deb_build
-" | pct exec $instance_id -- bash
+"
 }
 
 pct_clear_dhcp_leases() {
     local instance_id="$1"
-    echo "rm /var/lib/dhcp/dhclient*" | pct exec $instance_id -- sh
+    pct_run_simple_bash_script $instance_id "rm -f /var/lib/dhcp/dhclient*"
 }
 
 pct_apt_add_key() {

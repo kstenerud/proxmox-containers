@@ -57,6 +57,7 @@ rebuild_template() {
         return 1
     fi
 
+    pct unlock $id || true
     pct stop $id || true
     pct destroy $id || true
     bash "$build_script"
@@ -66,3 +67,5 @@ rebuild_template() {
 for name in ${!REGISTRY_NAME_TO_ID[@]}; do
     rebuild_template "$name"
 done
+
+echo "All template rebuild complete"

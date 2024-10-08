@@ -59,7 +59,7 @@ pct exec $INSTANCE_CT -- apt install -y git dpkg-dev debhelper net-tools
 
 # Workaround: Kick the DNS server so it doesn't error out looking up github
 pct exec $INSTANCE_CT -- ping -c 2 github.com
-pct_clone_git_repo $INSTANCE_CT https://github.com/Wind4/vlmcsd.git /tmp/vlmcsd
+pct_clone_git_repo $INSTANCE_CT https://github.com/Wind4/vlmcsd.git - /tmp/vlmcsd
 pct_install_deb_from_src $INSTANCE_CT /tmp/vlmcsd
 pct exec $INSTANCE_CT -- rm -rf /tmp/vlmcsd
 

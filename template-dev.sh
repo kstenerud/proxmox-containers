@@ -56,32 +56,48 @@ pct_apt_add_repo $INSTANCE_CT sublime-text "https://download.sublimetext.com/ ap
 pct exec $INSTANCE_CT -- apt update
 pct exec $INSTANCE_CT -- apt dist-upgrade -y
 pct exec $INSTANCE_CT -- apt install -y \
-	antlr4 \
-	autoconf \
-	autopkgtest \
-	bison \
-	build-essential \
-	cmake \
-	cpu-checker \
-	curl \
-	debconf-utils \
-	devscripts \
-	filezilla \
-	flex \
-	gdb \
-	gimp \
-	libtool \
-	meld \
-	meson \
-	mtools \
-	nasm \
-	nfs-common \
-	ninja-build \
-	ovmf \
-	pkg-config \
-	python3-pip \
-	python3-pytest \
-	sublime-text \
+    antlr4 \
+    autoconf \
+    autopkgtest \
+    bison \
+    build-essential \
+    cmake \
+    cpu-checker \
+    curl \
+    debconf-utils \
+    devscripts \
+    ffmpeg \
+    filezilla \
+    flex \
+    gdb \
+    gimp \
+    imagemagick \
+    jpegoptim \
+    libtool \
+    meld \
+    meson \
+    mtools \
+    nasm \
+    nfs-common \
+    ninja-build \
+    ovmf \
+    pandoc \
+    pkg-config \
+    python3-emoji \
+    python3-pip \
+    python3-pytest \
+    ruby \
+    ruby-dev \
+    sublime-text \
+
+pct_run_simple_bash_script $INSTANCE_CT "
+export NOKOGIRI_USE_SYSTEM_LIBRARIES=1
+gem install \
+    asciidoctor \
+    asciidoctor-epub3 \
+    asciidoctor-pdf \
+    epubcheck-ruby
+"
 
 pct_install_remote_deb $INSTANCE_CT "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
 

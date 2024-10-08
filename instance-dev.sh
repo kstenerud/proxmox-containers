@@ -53,6 +53,9 @@ chown ${HOST_BASE_UID}:${HOST_BASE_GID} ${HOST_DATA}/${INSTANCE_NAME}
 chown ${HOST_BASE_UID}:${HOST_BASE_GID} ${HOST_DATA}/${INSTANCE_NAME}/home
 pct set $INSTANCE_CT -mp0 ${HOST_DATA}/${INSTANCE_NAME}/home,mp=/home
 
+# Files mount
+pct set $INSTANCE_CT -mp1 /mnt/containers/files,mp=/mnt/files
+
 pct start $INSTANCE_CT
 
 # User
