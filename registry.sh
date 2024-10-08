@@ -69,19 +69,21 @@ registry_get_name() {
 
 # Top-level templates. These pull from the official Proxmox OS templates and thus have no dependencies.
 # I put them into separate 100 ranges based on the top-level template for clarity's sake.
-register_container template-debian      100 -
-register_container template-ubuntu      200 -
+register_container template-debian         100 -
+register_container template-ubuntu         200 -
 
 # Specialized templates.
-register_container template-debian-mate 101 template-debian
-register_container template-tx          102 template-debian-mate
-register_container template-dev         103 template-debian-mate
-register_container template-kms         104 template-debian
-register_container template-plex        201 template-ubuntu
+register_container template-debian-mate    101 template-debian
+register_container template-tx             102 template-debian-mate
+register_container template-dev            103 template-debian-mate
+register_container template-kms            104 template-debian
+register_container template-libretranslate 105 template-debian
+register_container template-plex           201 template-ubuntu
 
 # Instances. Numbered higher so they're easier to identify.
-register_container instance-tx        10000 template-tx
-register_container instance-dev       10001 template-dev
-register_container instance-plex      10002 template-plex
-register_container instance-kms       10003 template-kms
-register_container instance-emergency 19999 template-debian-mate
+register_container instance-tx             10000 template-tx
+register_container instance-dev            10001 template-dev
+register_container instance-plex           10002 template-plex
+register_container instance-kms            10003 template-kms
+register_container instance-libretranslate 10004 template-libretranslate
+register_container instance-emergency      19999 template-debian-mate
