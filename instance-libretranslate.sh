@@ -27,7 +27,7 @@ TEMPLATE_CT=$(registry_get_dependency instance-libretranslate)
 INSTANCE_CT=$(registry_get_id instance-libretranslate)
 INSTANCE_NAME=libretranslate
 INSTANCE_ADDRESS=24
-INSTANCE_MEMORY=8192
+INSTANCE_MEMORY=2048
 
 # ======
 # Script
