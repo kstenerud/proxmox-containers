@@ -29,6 +29,7 @@ Script naming and component responsibilities.
 ### Support Scripts
 
 * `rebuild-all-templates.sh`: Destroys and rebuilds all templates (NOT instances) that are in the registry
+* [`support` dir](support)
 
 ### Includes
 
@@ -53,3 +54,7 @@ You'll want to change these for your own topography.
 * `plex`: Plex media server. Connects to my NAS via the host, which connects over SAMBA (so that the container remains unprivileged).
 * `kms`: Key management server for windows
 * `libretranslate`: AI translator
+
+### Virtual Machines
+
+* `win10`: Windows 10
